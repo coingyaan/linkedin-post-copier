@@ -99,6 +99,14 @@
 
 <body>
   <div class="card">
+    <div style="text-align:right;margin-bottom:10px;">
+  <button 
+    onclick="resetPage()" 
+    style="background:none;border:none;font-size:16px;cursor:pointer;">
+    🏠 Home
+  </button>
+</div>
+
     <h1>🔗 LinkedIn Post Copier</h1>
     <p class="subtitle">Paste a public LinkedIn post URL</p>
 
@@ -135,41 +143,42 @@
   </div>
 
   <script>
-    async function extractPost() {
-      const url = document.getElementById("url").value;
-      const output = document.getElementById("output");
+  async function extractPost() {
+    const url = document.getElementById("url").value;
+    const output = document.getElementById("output");
 
-      if (!url) {
-        alert("Please paste a LinkedIn post URL");
-        return;
-      }
-
-      output.value = "Extracting...";
-
-      try {
-        const res = await fetch(
-          "https://linkedin-post-extractor.igadgetgyaan.workers.dev/?url=" +
-          encodeURIComponent(url)
-        );
-
-        const data = await res.json();
-
-        if (data.content) {
-          output.value = data.content;
-        } else {
-          output.value = data.error || "Unable to extract post.";
-        }
-      } catch (err) {
-        output.value = "Something went wrong. Please try again.";
-      }
+    if (!url) {
+      alert("Please paste a LinkedIn post URL");
+      return;
     }
 
-    function copyText() {
-      const output = document.getElementById("output");
-      output.select();
-      document.execCommand("copy");
-      alert("Copied to clipboard ✅");
+    output.value = "Extracting...";
+
+    try {
+      const res = await fetch(
+        "https://linkedin-post-extractor.igadgetgyaan.workers.dev/?url=" +
+        encodeURIComponent(url)
+      );
+      const data = await res.json();
+      output.value = data.content || data.error;
+    } catch (err) {
+      output.value = "Something went wrong. Please try again.";
     }
-  </script>
+  }
+
+  function copyText() {
+    const output = document.getElementById("output");
+    output.select();
+    document.execCommand("copy");
+    alert("Copied to clipboard ✅");
+  }
+
+  function resetPage() {
+    document.getElementById("url").value = "";
+    document.getElementById("output").value = "";
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+</script>
+
 </body>
 </html>
